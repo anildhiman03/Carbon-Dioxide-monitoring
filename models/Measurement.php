@@ -2,10 +2,8 @@
 
 namespace app\models;
 
+use app\models\query\MeasurementQuery;
 use Yii;
-use yii\db\Exception;
-use yii\helpers\BaseVarDumper;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "{{%measurement}}".
@@ -19,14 +17,23 @@ use yii\helpers\VarDumper;
  */
 class Measurement extends \yii\db\ActiveRecord
 {
+    /**
+     * status alert
+     */
     const STATUS_ALERT  =   'ALERT';
+    /**
+     * status warn
+     */
     const STATUS_WARM  =   'WARN';
+    /**
+     * status ok
+     */
     const STATUS_OK  =   'OK';
 
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%measurement}}';
     }
@@ -34,7 +41,7 @@ class Measurement extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['sensor_id', 'co2', 'time'], 'required'],
@@ -47,7 +54,7 @@ class Measurement extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -68,51 +75,47 @@ class Measurement extends \yii\db\ActiveRecord
     }
 
 
+    /**
+     * @throws \Exception
+     */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
 
-        try {
-
-            $lastMeasurements = self::find()
-                ->filterByID($this->sensor_id)
-                ->sortByTimeDesc()
-                ->limit(3)->all();
+        $lastMeasurements = self::find()
+            ->filterByID($this->sensor_id)
+            ->sortByTimeDesc()
+            ->limit(3)->all();
 
 
-            $highMeasurements = array_filter($lastMeasurements, function ($measurement) {
-                return $measurement->co2 >= 2000;
-            });
-            $lowMeasurements = array_filter($lastMeasurements, function ($measurement) {
-                return $measurement->co2 < 2000;
-            });
+        $highMeasurements = array_filter($lastMeasurements, function ($measurement) {
+            return $measurement->co2 >= 2000;
+        });
+        $lowMeasurements = array_filter($lastMeasurements, function ($measurement) {
+            return $measurement->co2 < 2000;
+        });
 
-            $status = self::STATUS_WARM;
+        $status = self::STATUS_WARM;
 
-            if (count($highMeasurements) >= 3) {
-                $status = self::STATUS_ALERT;
-                Alert::createAlert($this->sensor_id, $lastMeasurements);
-            } else if (count($lowMeasurements) === 3) {
-                $status = self::STATUS_OK;
-            }
-
-            Sensor::updateStatus($status, $this->sensor_id);
-        } catch (\Exception $e) {
-            throw $e;
+        if (count($highMeasurements) >= 3) {
+            $status = self::STATUS_ALERT;
+            Alert::createAlert($this->sensor_id, $lastMeasurements);
+        } else if (count($lowMeasurements) === 3) {
+            $status = self::STATUS_OK;
         }
-    }
 
+        Sensor::updateStatus($status, $this->sensor_id);
+    }
 
     /**
      * @throws \Exception
      */
     public static function createMeasurement(string $sensorID , array $data): Measurement
     {
-
         $measurement = new self([
             'sensor_id' => $sensorID,
             'co2' => $data["co2"],
-            'time' => date('Y-m-d H:i:s') //$data["time"]
+            'time' => $data["time"]
         ]);
 
         if (!$measurement->save()) {
@@ -124,10 +127,10 @@ class Measurement extends \yii\db\ActiveRecord
     }
     /**
      * {@inheritdoc}
-     * @return \app\models\query\MeasurementQuery the active query used by this AR class.
+     * @return MeasurementQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): query\MeasurementQuery
     {
-        return new \app\models\query\MeasurementQuery(get_called_class());
+        return new MeasurementQuery(get_called_class());
     }
 }

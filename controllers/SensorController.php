@@ -2,12 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\Alert;
 use app\models\Measurement;
 use app\models\Sensor;
 use Yii;
-use yii\db\Exception;
-use components\Response;
 use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -70,7 +67,7 @@ class SensorController extends Controller
 
         return [
             'maxLast30Days' => $max,
-            'avgLast30Days' => $avg,
+            'avgLast30Days' => $avg
         ];
     }
 

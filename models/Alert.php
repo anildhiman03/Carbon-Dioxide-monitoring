@@ -4,8 +4,7 @@ namespace app\models;
 
 use app\models\query\AlertQuery;
 use Yii;
-use yii\db\Exception;
-use yii\helpers\VarDumper;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "{{%alert}}".
@@ -62,9 +61,9 @@ class Alert extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Sensor]].
      *
-     * @return \yii\db\ActiveQuery|yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getSensor(): \yii\db\ActiveQuery
+    public function getSensor(): ActiveQuery
     {
         return $this->hasOne(Sensor::class, ['id' => 'sensor_id']);
     }

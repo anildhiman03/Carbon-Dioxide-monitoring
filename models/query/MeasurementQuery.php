@@ -32,12 +32,19 @@ class MeasurementQuery extends \yii\db\ActiveQuery
         return parent::one($db);
     }
 
-    public function filterByID($id)
+    /**
+     * @param $id
+     * @return MeasurementQuery
+     */
+    public function filterByID($id): MeasurementQuery
     {
         return $this->andwhere(['sensor_id' => $id]);
     }
 
-    public function sortByTimeDesc()
+    /**
+     * @return MeasurementQuery
+     */
+    public function sortByTimeDesc(): MeasurementQuery
     {
         return $this->orderBy(['time' => SORT_DESC]);
     }

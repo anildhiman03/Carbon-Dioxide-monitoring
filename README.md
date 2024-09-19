@@ -1,3 +1,10 @@
+~~~
+1. run `composer up`
+2. update database credentials in config/db.php file
+3. run command `php yii migrate up` to install database schema
+~~~
+
+
 <p align="center">
     <a href="https://github.com/yiisoft" target="_blank">
         <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">

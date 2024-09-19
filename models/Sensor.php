@@ -4,7 +4,6 @@ namespace app\models;
 
 use app\models\query\SensorQuery;
 use Yii;
-use yii\db\Exception;
 
 /**
  * This is the model class for table "{{%sensor}}".
@@ -61,20 +60,21 @@ class Sensor extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Measurements]].
      *
-     * @return \yii\db\ActiveQuery|\app\models\query\MeasurementQuery
+     * @return \yii\db\ActiveQuery
      */
-    public function getMeasurements() 
+    public function getMeasurements(): \yii\db\ActiveQuery
     {
         return $this->hasMany(Measurement::class, ['sensor_id' => 'id']);
     }
 
+    /**
+     * @param $status
+     * @param $id
+     * @return void
+     */
     public static function updateStatus($status, $id)
     {
-        try {
-            self::updateAll(['status' => $status], ['id' => $id]);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        self::updateAll(['status' => $status], ['id' => $id]);
     }
 
     /**
@@ -108,10 +108,10 @@ class Sensor extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return \app\models\query\SensorQuery the active query used by this AR class.
+     * @return SensorQuery the active query used by this AR class.
      */
     public static function find() : SensorQuery
     {
-        return new \app\models\query\SensorQuery(get_called_class());
+        return new SensorQuery(get_called_class());
     }
 }
