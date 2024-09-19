@@ -25,7 +25,7 @@ class SensorController extends Controller
 
             return [
                 "co2" => $measurement->co2,
-                "time" => $measurement->time
+                "time" => date('Y-m-d H:i:s') //$measurement->time
             ];
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
@@ -60,7 +60,14 @@ class SensorController extends Controller
         }
 
         $last30Days = (new \DateTime())->modify('-30 days')->format('Y-m-d H:i:s');
-        $measurements = Measurement::find()->where(['sensor_id' => $sensor->id])->andWhere(['>=', 'time', $last30Days])->all();
+        $measurements = Measurement::find()->filterByID($sensor->id)->greaterThenTime($last30Days)->all();
+
+        if (count($measurements) === 0 ) {
+            return [
+                'maxLast30Days' => 0,
+                'avgLast30Days' => 0
+            ];
+        }
 
         $max = max(array_column($measurements, 'co2'));
         $avg = array_sum(array_column($measurements, 'co2')) / count($measurements);

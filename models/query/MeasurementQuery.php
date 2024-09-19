@@ -48,4 +48,11 @@ class MeasurementQuery extends \yii\db\ActiveQuery
     {
         return $this->orderBy(['time' => SORT_DESC]);
     }
+    /**
+     * @return MeasurementQuery
+     */
+    public function greaterThenTime($time): MeasurementQuery
+    {
+        return $this->andWhere(['>=', 'time', $time]);
+    }
 }

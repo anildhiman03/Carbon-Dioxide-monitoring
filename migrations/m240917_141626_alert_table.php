@@ -15,8 +15,8 @@ class m240917_141626_alert_table extends Migration
         $this->createTable('alert', [
             'id' => $this->primaryKey(),
             'sensor_id' => $this->integer()->notNull(),
-            'start_time' => $this->dateTime()->notNull(),
-            'end_time' => $this->dateTime()->notNull(),
+            'start_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+            'end_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'measurement1' => $this->integer()->notNull(),
             'measurement2' => $this->integer()->notNull(),
             'measurement3' => $this->integer()->notNull(),
