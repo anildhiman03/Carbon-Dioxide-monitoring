@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "fab8c25c-1d4b-412c-835d-76bab08d9b2b",
+		"name": "test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30827590"
+	},
+	"item": [
+		{
+			"name": "Collect sensor mesurements",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"co2\" : \"2011\",\r\n    \"time\" : \"2019-02-01T18:55:47+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/basic/web/api/v1/sensors/f45d3073-2222-4ef0-80aa-ff4a33947076/measurements",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"basic",
+						"web",
+						"api",
+						"v1",
+						"sensors",
+						"f45d3073-2222-4ef0-80aa-ff4a33947076",
+						"measurements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sensor status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/basic/web/api/v1/sensors/f45d3073-1111-4ef0-80aa-ff4a33947076",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"basic",
+						"web",
+						"api",
+						"v1",
+						"sensors",
+						"f45d3073-1111-4ef0-80aa-ff4a33947076"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sensor metrics",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/basic/web/api/v1/sensors/f45d3073-1111-4ef0-80aa-ff4a33947076/metrics",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"basic",
+						"web",
+						"api",
+						"v1",
+						"sensors",
+						"f45d3073-1111-4ef0-80aa-ff4a33947076",
+						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listing alerts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/basic/web/api/v1/sensors/f45d3073-1111-4ef0-80aa-ff4a33947076/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"basic",
+						"web",
+						"api",
+						"v1",
+						"sensors",
+						"f45d3073-1111-4ef0-80aa-ff4a33947076",
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

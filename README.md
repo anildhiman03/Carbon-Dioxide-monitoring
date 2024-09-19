@@ -30,3 +30,6 @@ API Urls
 -- http://127.0.0.1:8000/api/v1/sensors/{{uuid}}/metrics
 
 -- http://127.0.0.1:8000/api/v1/sensors/{{uuid}}/alerts
+
+
+import test.postman_collection.json file in postman to test the project
