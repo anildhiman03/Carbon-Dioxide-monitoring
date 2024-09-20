@@ -13,7 +13,7 @@ Start the container
     docker-compose up -d
     
 
-We need to run php yii migrate up command to install all migrations
+We need to run `php yii migrate up` command to install all migrations
 then db will work
 
 You can then access the application through the following URL:
