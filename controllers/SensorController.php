@@ -10,7 +10,6 @@ use yii\web\NotFoundHttpException;
 
 class SensorController extends Controller
 {
-
     /**
      * @throws \Exception
      */
@@ -21,10 +20,10 @@ class SensorController extends Controller
 
             $data = json_decode(Yii::$app->getRequest()->getRawBody(),true);
 
-            $measurement = Measurement::createMeasurement($sensor->id, $data);
+            $measurement = Measurement::createMeasurement($sensor->sensor_uuid, $data);
 
             return [
-                "co2" => $measurement->co2,
+                "co2" => $measurement->measurement_co2,
                 "time" => date('Y-m-d H:i:s') //$measurement->time
             ];
         } catch (\Exception $e) {
@@ -37,14 +36,14 @@ class SensorController extends Controller
      */
     public function actionStatus($uuid): array
     {
-        $sensor = Sensor::findOne(['uuid' => $uuid]);
+        $sensor = Sensor::findOne(['sensor_uuid' => $uuid]);
 
         if (!$sensor) {
             throw new NotFoundHttpException("Sensor not found");
         }
 
         return [
-            "status" => $sensor->status
+            "status" => $sensor->sensor_status
         ];
     }
 
@@ -53,29 +52,7 @@ class SensorController extends Controller
      */
     public function actionMetrics($uuid): array
     {
-        $sensor = Sensor::findOne(['uuid' => $uuid]);
-
-        if (!$sensor) {
-            throw new NotFoundHttpException("Sensor not found");
-        }
-
-        $last30Days = (new \DateTime())->modify('-30 days')->format('Y-m-d H:i:s');
-        $measurements = Measurement::find()->filterByID($sensor->id)->greaterThenTime($last30Days)->all();
-
-        if (count($measurements) === 0 ) {
-            return [
-                'maxLast30Days' => 0,
-                'avgLast30Days' => 0
-            ];
-        }
-
-        $max = max(array_column($measurements, 'co2'));
-        $avg = array_sum(array_column($measurements, 'co2')) / count($measurements);
-
-        return [
-            'maxLast30Days' => $max,
-            'avgLast30Days' => $avg
-        ];
+        return Sensor::getMetricData($uuid);
     }
 
     /**
@@ -83,12 +60,20 @@ class SensorController extends Controller
      */
     public function actionAlerts($uuid): array
     {
-        $sensor = Sensor::findOne(['uuid' => $uuid]);
+        $allAlerts = Sensor::getAllSensorAlerts($uuid);
 
-        if (!$sensor) {
-            throw new NotFoundHttpException("Sensor not found");
+        $alerts = [];
+        foreach ($allAlerts as $key => $value) {
+            $alerts['measurement' . ++$key] = $value['measurement']['measurement_co2'];
         }
 
-        return $sensor->getAlerts()->asArray()->all();
+        return array_merge(
+            [
+                'startTime' => current($allAlerts)['alert_created_at'],
+                'endTime' => end($allAlerts)['alert_created_at'],
+            ],
+            $alerts
+        );
+
     }
 }

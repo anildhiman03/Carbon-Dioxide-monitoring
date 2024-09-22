@@ -12,16 +12,18 @@ class m240917_141626_alert_table extends Migration
      */
     public function safeUp()
     {
+        if ($this->db->driverName === 'mysql') {
+            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+        }
+
         $this->createTable('alert', [
-            'id' => $this->primaryKey(),
-            'sensor_id' => $this->integer()->notNull(),
-            'start_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
-            'end_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
-            'measurement1' => $this->integer()->notNull(),
-            'measurement2' => $this->integer()->notNull(),
-            'measurement3' => $this->integer()->notNull(),
-        ]);
-        $this->addForeignKey('fk_alert_sensor', 'alert', 'sensor_id', 'sensor', 'id', 'CASCADE');
+            'alert_uuid' => $this->char(36)->notNull(),
+            'measurement_uuid' => $this->char(36)->notNull(),
+            'alert_created_at' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+        ], $tableOptions);
+
+        $this->addPrimaryKey('PK', 'alert', 'alert_uuid');
+        $this->addForeignKey('fk_alert_measurement', 'alert', 'measurement_uuid', 'measurement', 'measurement_uuid', 'CASCADE');
     }
 
     /**

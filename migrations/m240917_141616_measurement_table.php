@@ -12,14 +12,19 @@ class m240917_141616_measurement_table extends Migration
      */
     public function safeUp()
     {
+        if ($this->db->driverName === 'mysql') {
+            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+        }
 
         $this->createTable('measurement', [
-            'id' => $this->primaryKey(),
-            'co2' => $this->integer()->notNull(),
-            'sensor_id' => $this->integer()->notNull(),
-            'time' => $this->dateTime()->notNull(),
-        ]);
-        $this->addForeignKey('fk_measurement_sensor', 'measurement', 'sensor_id', 'sensor', 'id', 'CASCADE');
+            'measurement_uuid' => $this->char(36)->notNull(),
+            'sensor_uuid' => $this->char(36)->notNull(),
+            'measurement_co2' => $this->integer()->notNull(),
+            'measurement_created_at' => $this->dateTime()->notNull(),
+        ], $tableOptions);
+
+        $this->addPrimaryKey('PK', 'measurement', 'measurement_uuid');
+        $this->addForeignKey('fk_measurement_sensor', 'measurement', 'sensor_uuid', 'sensor', 'sensor_uuid', 'CASCADE');
     }
 
     /**

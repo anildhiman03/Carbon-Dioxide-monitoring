@@ -9,11 +9,6 @@ namespace app\models\query;
  */
 class MeasurementQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
     /**
      * {@inheritdoc}
      * @return \app\models\Measurement[]|array
@@ -33,12 +28,12 @@ class MeasurementQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     * @param $id
+     * @param $uuid
      * @return MeasurementQuery
      */
-    public function filterByID($id): MeasurementQuery
+    public function filterByID($uuid): MeasurementQuery
     {
-        return $this->andwhere(['sensor_id' => $id]);
+        return $this->andwhere(['sensor_uuid' => $uuid]);
     }
 
     /**
@@ -46,13 +41,13 @@ class MeasurementQuery extends \yii\db\ActiveQuery
      */
     public function sortByTimeDesc(): MeasurementQuery
     {
-        return $this->orderBy(['time' => SORT_DESC]);
+        return $this->orderBy(['measurement_created_at' => SORT_DESC]);
     }
     /**
      * @return MeasurementQuery
      */
     public function greaterThenTime($time): MeasurementQuery
     {
-        return $this->andWhere(['>=', 'time', $time]);
+        return $this->andWhere(['>=', 'measurement_created_at', $time]);
     }
 }

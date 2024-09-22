@@ -9,15 +9,11 @@ use yii\db\ActiveQuery;
 /**
  * This is the model class for table "{{%alert}}".
  *
- * @property int $id
- * @property int $sensor_id
- * @property string $start_time
- * @property string $end_time
- * @property int $measurement1
- * @property int $measurement2
- * @property int $measurement3
+ * @property int $alert_uuid
+ * @property int $measurement_uuid
+ * @property string $alert_created_at
  *
- * @property Sensor $sensor
+ * @property Measurement $measurement
  */
 class Alert extends \yii\db\ActiveRecord
 {
@@ -35,10 +31,9 @@ class Alert extends \yii\db\ActiveRecord
     public function rules(): array
     {
         return [
-            [['sensor_id', 'start_time', 'end_time', 'measurement1', 'measurement2', 'measurement3'], 'required'],
-            [['sensor_id', 'measurement1', 'measurement2', 'measurement3'], 'integer'],
-            [['start_time', 'end_time'], 'safe'],
-            [['sensor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sensor::class, 'targetAttribute' => ['sensor_id' => 'id']],
+            [['alert_uuid','measurement_uuid'], 'string'],
+            [['alert_created_at','measurement_uuid'], 'safe'],
+            [['measurement_uuid'], 'exist', 'skipOnError' => true, 'targetClass' => Measurement::class, 'targetAttribute' => ['measurement_uuid' => 'measurement_uuid']],
         ];
     }
 
@@ -48,14 +43,18 @@ class Alert extends \yii\db\ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'sensor_id' => 'Sensor ID',
-            'start_time' => 'Start Time',
-            'end_time' => 'End Time',
-            'measurement1' => 'Measurement1',
-            'measurement2' => 'Measurement2',
-            'measurement3' => 'Measurement3',
+            'alert_uuid' => 'UUID',
+            'measurement_uuid' => 'measurement UUID',
+            'alert_created_at' => 'created At',
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($insert)
+            $this->alert_uuid = (new \yii\db\Query)->select(new yii\db\Expression('UUID()'))->scalar();
+
+        return parent::beforeSave($insert);
     }
 
     /**
@@ -63,33 +62,25 @@ class Alert extends \yii\db\ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getSensor(): ActiveQuery
+    public function getMeasurement(): ActiveQuery
     {
-        return $this->hasOne(Sensor::class, ['id' => 'sensor_id']);
+        return $this->hasOne(Measurement::class, ['measurement_uuid' => 'measurement_uuid']);
     }
 
 
     /**
-     * @param $sensorID
-     * @param $measurements
+     * @param $measurement_uuid
      * @return void
      * @throws \Exception
      */
-    public static function createAlert($sensorID, $measurements)
+    public static function createAlert($measurement_uuid)
     {
-        $alert = new self([
-            'sensor_id' => $sensorID,
-            'start_time' => $measurements[0]->time,
-            'end_time' => $measurements[2]->time,
-            'measurement1' => $measurements[0]->co2,
-            'measurement2' => $measurements[1]->co2,
-            'measurement3' => $measurements[2]->co2,
-        ]);
+        $alert = new self(['measurement_uuid' => $measurement_uuid]);
 
         if (!$alert->save()) {
-            throw new \Exception($alert->getErrors());
+            throw new \Exception(json_encode($alert->getErrors()));
         }
-        Yii::info('New alert has been created with id ' . $alert->id );
+        Yii::info('New alert has been created with id ' . $alert->alert_uuid );
     }
 
     /**
