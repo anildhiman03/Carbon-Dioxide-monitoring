@@ -24,7 +24,7 @@ class SensorController extends Controller
 
             return [
                 "co2" => $measurement->measurement_co2,
-                "time" => date('Y-m-d H:i:s') //$measurement->time
+                "time" => $measurement->measurement_created_at
             ];
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());

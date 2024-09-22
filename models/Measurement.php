@@ -124,7 +124,7 @@ class Measurement extends \yii\db\ActiveRecord
         $measurement = new self([
             'sensor_uuid' => $sensor_uuid,
             'measurement_co2' => $data["co2"],
-            'measurement_created_at' => date('Y-m-d H:i:s')
+            'measurement_created_at' => date('Y-m-d H-i-s',strtotime($data["time"]))
         ]);
 
         if (!$measurement->save()) {
